@@ -36,6 +36,21 @@ ENV NODE_ENV=production
 ENV PORT=3001
 ENV FREELLMAPI_INSTALL_METHOD=docker
 
+# Litestream — replicates the SQLite DB to S3-compatible storage so provider
+# keys survive Render's ephemeral filesystem (free tier wipes /app/server/data
+# on every restart). Skipped entirely unless LITESTREAM_S3_* env vars are set.
+ARG LITESTREAM_VERSION=0.3.13
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl ca-certificates \
+  && curl -fsSL -o /tmp/litestream.tar.gz \
+       "https://github.com/benbjohnson/litestream/releases/download/v${LITESTREAM_VERSION}/litestream-v${LITESTREAM_VERSION}-linux-amd64.tar.gz" \
+  && tar -xzf /tmp/litestream.tar.gz -C /usr/local/bin litestream \
+  && chmod +x /usr/local/bin/litestream \
+  && rm /tmp/litestream.tar.gz \
+  && apt-get purge -y --auto-remove curl \
+  && rm -rf /var/lib/apt/lists/*
+COPY litestream.yml /etc/litestream.yml
+
 COPY --from=build --chown=node:node /app/package.json /app/package-lock.json ./
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 # npm nests some production packages under the workspace instead of hoisting

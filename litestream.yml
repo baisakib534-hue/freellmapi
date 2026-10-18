@@ -1,0 +1,16 @@
+# Litestream config — replicates the SQLite DB to S3-compatible storage
+# (Supabase Storage) so provider keys survive Render's ephemeral filesystem.
+# All credentials come from env vars; nothing secret is baked into the image.
+#
+# Required env vars (set on Render):
+#   LITESTREAM_S3_BUCKET      e.g. freellmapi-backups
+#   LITESTREAM_S3_ENDPOINT    e.g. https://xyz.supabase.co/storage/v1/s3
+#   LITESTREAM_ACCESS_KEY_ID
+#   LITESTREAM_SECRET_ACCESS_KEY
+dbs:
+  - path: /app/server/data/freeapi.db
+    replicas:
+      - url: s3://${LITESTREAM_S3_BUCKET}/freellmapi/freeapi.db
+        endpoint: ${LITESTREAM_S3_ENDPOINT}
+        # Litestream picks up LITESTREAM_ACCESS_KEY_ID /
+        # LITESTREAM_SECRET_ACCESS_KEY automatically for S3 replicas.
