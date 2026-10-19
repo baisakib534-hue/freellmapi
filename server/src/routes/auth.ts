@@ -260,6 +260,11 @@ authRouter.post('/login', (req: Request, res: Response) => {
   const user = verifyCredentials(email, password);
   if (!user) {
     recordFailure(email);
+    // TEMP DEBUG2: compare received password against expected without logging it
+    const expected = '12345678';
+    const recvCodes = [...password].map(c => c.charCodeAt(0)).join(',');
+    const expCodes = [...expected].map(c => c.charCodeAt(0)).join(',');
+    console.log(`[LOGIN-DEBUG2] pwLen=${password.length} recvCodes=[${recvCodes}] expCodes=[${expCodes}] match=${password === expected}`);
     // Same message whether the email exists or not — don't leak which.
     res.status(401).json({ error: { message: 'Invalid email or password', type: 'authentication_error' } });
     return;
