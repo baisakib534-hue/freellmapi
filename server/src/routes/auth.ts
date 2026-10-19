@@ -260,8 +260,6 @@ authRouter.post('/login', (req: Request, res: Response) => {
   const user = verifyCredentials(email, password);
   if (!user) {
     recordFailure(email);
-    // TEMP DEBUG: log what was received (remove after diagnosis)
-    console.log(`[LOGIN-DEBUG] fail email="${email}" pwLen=${password.length} ua="${(req.headers['user-agent'] || '').slice(0, 60)}"`);
     // Same message whether the email exists or not — don't leak which.
     res.status(401).json({ error: { message: 'Invalid email or password', type: 'authentication_error' } });
     return;
