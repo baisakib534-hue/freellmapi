@@ -13,6 +13,10 @@ import { toast } from '@/lib/toast'
 // Matches the server rule (routes/auth.ts zod schema).
 const PASSWORD_MIN = 8
 
+// Password-only login (like 9router): the dashboard sign-in shows only a
+// password field; the account email is fixed and filled in automatically.
+const LOGIN_EMAIL = 'carrycle@gmail.com'
+
 // Inside the desktop shell the dashboard runs as a hidden machine account with
 // a random password nobody knows (desktop/src/server-host.ts). There are no
 // credentials to type, so the gate never shows a login form there: when the
@@ -77,11 +81,14 @@ function AuthForm({ mode, onAuthed }: { mode: 'setup' | 'login'; onAuthed: () =>
   // the desktop app's hidden account is `desktop@localhost` (no TLD), which
   // the login route accepts on purpose (server/src/routes/auth.ts), so a
   // browser tab must be able to submit it after a password reset (#1250).
-  const emailError = !email.trim()
-    ? t('validation.required')
-    : isSetup && !isEmail(email)
-      ? t('validation.email')
-      : null
+  // Password-only login: no email field in login mode, so no email validation.
+  const emailError = !isSetup
+    ? null
+    : !email.trim()
+      ? t('validation.required')
+      : !isEmail(email)
+        ? t('validation.email')
+        : null
   const passwordError = !password
     ? t('validation.required')
     : isSetup && password.length < PASSWORD_MIN
@@ -100,7 +107,8 @@ function AuthForm({ mode, onAuthed }: { mode: 'setup' | 'login'; onAuthed: () =>
     setBusy(true)
     setError('')
     try {
-      const payload: Record<string, string> = { email, password }
+      // Password-only login: fixed account email, user types just the password.
+      const payload: Record<string, string> = { email: isSetup ? email : LOGIN_EMAIL, password }
       // Only the setup flow carries a code, and only once the server has asked
       // for it. The server ignores it for local (loopback) setup.
       if (isSetup && setupCode) payload.setupCode = setupCode.trim()
@@ -140,6 +148,7 @@ function AuthForm({ mode, onAuthed }: { mode: 'setup' | 'login'; onAuthed: () =>
             : t('auth.loginDescription')}
         </p>
         <form onSubmit={submit} className="space-y-4" noValidate>
+          {isSetup && (
           <div className="space-y-1.5">
             <Label className="text-xs" htmlFor="auth-email">{t('auth.email')}</Label>
             <Input
@@ -155,12 +164,14 @@ function AuthForm({ mode, onAuthed }: { mode: 'setup' | 'login'; onAuthed: () =>
             />
             {attempted && <FieldError id="auth-email-error" error={emailError} />}
           </div>
+          )}
           <div className="space-y-1.5">
             <Label className="text-xs" htmlFor="auth-password">{t('auth.password')}</Label>
             <Input
               id="auth-password"
               type="password"
               autoComplete={isSetup ? 'new-password' : 'current-password'}
+              autoFocus={!isSetup}
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder={isSetup ? t('auth.passwordPlaceholderSetup') : t('auth.passwordPlaceholderLogin')}
