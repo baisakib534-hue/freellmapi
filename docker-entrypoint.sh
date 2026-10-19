@@ -56,10 +56,17 @@ if [ "$(id -u)" = "0" ]; then
     DB_FILE="${FREEAPI_DB_PATH:-/app/server/data/freeapi.db}"
     if [ ! -f "$DB_FILE" ]; then
       echo "docker-entrypoint: local DB missing, restoring from S3 replica..." >&2
-      if litestream restore -if-replica-exists -config /etc/litestream.yml -o "$DB_FILE" 2>&1; then
-        echo "docker-entrypoint: DB restored from replica" >&2
+      # NOTE: the DB path must be passed as a positional arg so litestream can
+      # match it against litestream.yml; without it, restore silently finds
+      # no replica (seen 2026-10-19: fresh DB + "new generation" on every boot).
+      if litestream restore -if-replica-exists -config /etc/litestream.yml -o "$DB_FILE" "$DB_FILE" 2>&1; then
+        if [ -f "$DB_FILE" ]; then
+          echo "docker-entrypoint: DB restored from replica" >&2
+        else
+          echo "docker-entrypoint: no replica found, starting with a fresh DB" >&2
+        fi
       else
-        echo "docker-entrypoint: no replica found, starting with a fresh DB" >&2
+        echo "docker-entrypoint: restore failed, starting with a fresh DB" >&2
       fi
       chown "$NODE_UID:$NODE_GID" "$DB_FILE" "$DB_FILE-wal" "$DB_FILE-shm" 2>/dev/null || true
     fi
