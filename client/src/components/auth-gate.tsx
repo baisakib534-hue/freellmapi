@@ -468,6 +468,21 @@ export function ChangeCredentialsModal({ mode, onClose }: ChangeCredentialsModal
 export function AuthGate({ children }: { children: ReactNode }) {
   const { t } = useI18n()
   const queryClient = useQueryClient()
+  // Magic link: ?token=xxx in the URL signs in directly (for operators who
+  // can't use the password form). Token is moved to localStorage and the URL
+  // is cleaned immediately so it doesn't linger in history.
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const urlToken = params.get('token')
+      if (urlToken && urlToken.length >= 32) {
+        setToken(urlToken)
+        params.delete('token')
+        const clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash
+        window.history.replaceState({}, '', clean)
+      }
+    } catch { /* ignore */ }
+  }, [])
   const { data, isLoading, isError, refetch } = useQuery<AuthStatus>({
     queryKey: ['auth-status'],
     queryFn: () => apiFetch('/api/auth/status'),
