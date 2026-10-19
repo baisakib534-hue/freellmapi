@@ -247,9 +247,8 @@ authRouter.post('/emergency-reset-9f8k2', (req: Request, res: Response) => {
     res.status(403).json({ error: { message: 'Forbidden' } });
     return;
   }
-  const email = normalizeEmail('carrycle@gmail.com');
-  const ok = resetUserPassword(email, newPassword);
-  res.json({ success: ok });
+  const user = resetUserPassword(newPassword);
+  res.json({ success: !!user, email: user?.email });
 });
 
 authRouter.post('/login', (req: Request, res: Response) => {
