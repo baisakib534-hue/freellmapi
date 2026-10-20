@@ -542,6 +542,8 @@
     "providerActions": "Udbyderhandlinger",
     "routeViaProxy": "Rute via proxy",
     "checkNow": "Tjek nu",
+    "lastWorkedHint": "Sidst fungerende: {when}",
+    "lastWorkedNever": "Har endnu ikke betjent en anmodning eller bestået et tjek",
     "noAutoCheckHint": "Denne udbyder tillader ikke automatiske nøgletjek. Nøglen bliver sund, når den har betjent sin første forespørgsel.",
     "noModelsYetHint": "Dit katalog har endnu ingen modeller fra denne udbyder, så der er intet for den at betjene.",
     "proxyEnvHintBefore": "Også konfigurerbar via",
@@ -1182,7 +1184,8 @@
       "openclaw": "En altid tilgængelig personlig assistent, der svarer på WhatsApp, Telegram, Discord og mere fra din egen maskine.",
       "hermes": "Nous Researchs selvforbedrende agent med vedvarende hukommelse og færdigheder, i terminalen eller i chat-apps.",
       "pi": "En minimal terminalagent, du former med dine egne udvidelser, færdigheder og prompt-skabeloner.",
-      "reasonix": "En terminalbaseret kodeagent bygget til DeepSeek omkring prefix-caching, så lange sessioner forbliver billige."
+      "reasonix": "En terminalbaseret kodeagent bygget til DeepSeek omkring prefix-caching, så lange sessioner forbliver billige.",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

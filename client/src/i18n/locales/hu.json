@@ -542,6 +542,8 @@
     "providerActions": "Szolgáltatói intézkedések",
     "routeViaProxy": "Útvonal proxyn keresztül",
     "checkNow": "Ellenőrizd most",
+    "lastWorkedHint": "Utolsó működés: {when}",
+    "lastWorkedNever": "Még nem szolgált le egyetlen kérést sem, és nem sikerült egy ellenőrzés sem",
     "noAutoCheckHint": "Ez a szolgáltató nem engedélyezi a kulcsok automatikus ellenőrzését. A kulcs az első kiszolgált kérése után lesz egészséges.",
     "noModelsYetHint": "A katalógusodban még nincs modell ettől a szolgáltatótól, így nincs mit kiszolgálnia.",
     "proxyEnvHintBefore": "Konfigurálható a",
@@ -1182,7 +1184,8 @@
       "openclaw": "Egy mindig elérhető személyes asszisztens, amely a saját gépedről válaszol a WhatsApp, a Telegram, a Discord és más alkalmazások üzeneteire.",
       "hermes": "A Nous Research önfejlesztő ügynöke tartós memóriával és készségekkel, terminálban vagy csevegőalkalmazásokban.",
       "pi": "Minimalista terminálügynök, amelyet saját bővítményekkel, készségekkel és promptsablonokkal alakíthat.",
-      "reasonix": "DeepSeekre szabott terminálos kódolóügynök, amely a prefix-gyorsítótárra épül, így a hosszú munkamenetek is olcsók maradnak."
+      "reasonix": "DeepSeekre szabott terminálos kódolóügynök, amely a prefix-gyorsítótárra épül, így a hosszú munkamenetek is olcsók maradnak.",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

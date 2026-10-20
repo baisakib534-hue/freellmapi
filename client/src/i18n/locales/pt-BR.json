@@ -542,6 +542,8 @@
     "providerActions": "Ações do provedor",
     "routeViaProxy": "Rotear pelo proxy",
     "checkNow": "Verificar agora",
+    "lastWorkedHint": "Último funcionamento: {when}",
+    "lastWorkedNever": "Ainda não atendeu nenhuma requisição nem passou em uma verificação",
     "noAutoCheckHint": "Este provedor não permite verificações automáticas de chave. A chave fica saudável depois de atender a primeira solicitação.",
     "noModelsYetHint": "Seu catálogo ainda não tem modelos deste provedor, então não há nada para ela atender.",
     "proxyEnvHintBefore": "Também configurável pela variável de ambiente ",
@@ -1182,7 +1184,8 @@
       "openclaw": "Um assistente pessoal sempre ativo que responde no WhatsApp, Telegram, Discord e outros a partir da sua própria máquina.",
       "hermes": "O agente autoaperfeiçoável da Nous Research, com memória persistente e habilidades, no terminal ou em apps de chat.",
       "pi": "Um agente de terminal minimalista que você molda com suas próprias extensões, habilidades e modelos de prompt.",
-      "reasonix": "Um agente de programação para o terminal nativo do DeepSeek, construído em torno do cache de prefixo para que sessões longas continuem baratas."
+      "reasonix": "Um agente de programação para o terminal nativo do DeepSeek, construído em torno do cache de prefixo para que sessões longas continuem baratas.",
+      "zcode": "O agente de código da Z.ai para seus modelos GLM, que fala com qualquer endpoint compatível com OpenAI por meio de um registro de provedores."
     }
   },
   "update": {

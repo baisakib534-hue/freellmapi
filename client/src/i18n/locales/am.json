@@ -542,6 +542,8 @@
     "providerActions": "የአቅራቢዎች እርምጃዎች",
     "routeViaProxy": "በፕሮክሲ በኩል የሚደረግ መንገድ",
     "checkNow": "አሁን ይመልከቱ",
+    "lastWorkedHint": "Last worked: {when}",
+    "lastWorkedNever": "Has not served a request or passed a check yet",
     "noAutoCheckHint": "ይህ አቅራቢ ራስ-ሰር የቁልፍ ፍተሻዎችን አይፈቅድም። ቁልፉ የመጀመሪያ ጥያቄውን ካገለገለ በኋላ ጤናማ ይሆናል።",
     "noModelsYetHint": "ካታሎግዎ ከዚህ አቅራቢ እስካሁን ሞዴሎች የሉትም፣ ስለዚህ የሚያገለግለው ነገር የለም።",
     "proxyEnvHintBefore": "እንዲሁም በ በኩል ሊዋቀር ይችላል",
@@ -1182,7 +1184,8 @@
       "openclaw": "ከራስዎ ማሽን ሆኖ በ WhatsApp፣ Telegram፣ Discord እና በሌሎችም ላይ የሚመልስ፣ ሁልጊዜ የሚሠራ የግል ረዳት።",
       "hermes": "የ Nous Research ራሱን የሚያሻሽል ኤጀንት፣ ቋሚ ማህደረ ትውስታ እና ክህሎቶች ያሉት፣ በተርሚናል ወይም በቻት መተግበሪያዎች ላይ።",
       "pi": "በራስዎ ቅጥያዎች፣ ክህሎቶች እና የጥያቄ አብነቶች የሚቀርጹት አነስተኛ የተርሚናል ኤጀንት።",
-      "reasonix": "ለDeepSeek የተሰራ የተርሚናል ኮዲንግ ወኪል፤ ረጅም ክፍለ ጊዜዎች ርካሽ እንዲሆኑ በprefix caching ዙሪያ የተገነባ።"
+      "reasonix": "ለDeepSeek የተሰራ የተርሚናል ኮዲንግ ወኪል፤ ረጅም ክፍለ ጊዜዎች ርካሽ እንዲሆኑ በprefix caching ዙሪያ የተገነባ።",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

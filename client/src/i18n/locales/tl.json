@@ -542,6 +542,8 @@
     "providerActions": "Mga aksyon ng provider",
     "routeViaProxy": "Ruta sa pamamagitan ng proxy",
     "checkNow": "Suriin ngayon",
+    "lastWorkedHint": "Last worked: {when}",
+    "lastWorkedNever": "Has not served a request or passed a check yet",
     "noAutoCheckHint": "Hindi pinapayagan ng provider na ito ang awtomatikong pagsusuri ng key. Magiging healthy ang key pagkatapos nitong pagsilbihan ang una nitong request.",
     "noModelsYetHint": "Wala pang model mula sa provider na ito ang iyong catalog, kaya wala pa itong mapagsisilbihan.",
     "proxyEnvHintBefore": "Maaari ring i-configure gamit ang",
@@ -1182,7 +1184,8 @@
       "openclaw": "Isang personal assistant na laging naka-on at sumasagot sa WhatsApp, Telegram, Discord at iba pa mula sa sarili mong makina.",
       "hermes": "Ang self-improving na agent ng Nous Research na may persistent na memorya at mga skill, sa terminal o sa mga chat app.",
       "pi": "Isang minimal na terminal agent na hinuhubog mo gamit ang sarili mong mga extension, skill at prompt template.",
-      "reasonix": "Isang terminal coding agent na ginawa para sa DeepSeek, nakabatay sa prefix caching para manatiling mura ang mahahabang session."
+      "reasonix": "Isang terminal coding agent na ginawa para sa DeepSeek, nakabatay sa prefix caching para manatiling mura ang mahahabang session.",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

@@ -542,6 +542,8 @@
     "providerActions": "ပံ့ပိုးသူ လုပ်ဆောင်ချက်များ",
     "routeViaProxy": "Proxy ဖြင့် လမ်းကြောင်းပြောင်းခြင်း",
     "checkNow": "ယခုစစ်ဆေးပါ",
+    "lastWorkedHint": "Last worked: {when}",
+    "lastWorkedNever": "Has not served a request or passed a check yet",
     "noAutoCheckHint": "ဤဝန်ဆောင်မှုပေးသူသည် key ကို အလိုအလျောက် စစ်ဆေးခြင်းကို ခွင့်မပြုပါ။ ပထမဆုံး တောင်းဆိုမှုကို ဆောင်ရွက်ပြီးနောက် key သည် ကောင်းမွန်သွားပါမည်။",
     "noModelsYetHint": "သင့်ကတ်တလောက်တွင် ဤဝန်ဆောင်မှုပေးသူ၏ မော်ဒယ်များ မရှိသေးသဖြင့် ဆောင်ရွက်စရာ မရှိပါ။",
     "proxyEnvHintBefore": "ထို့အပြင် ပြင်ဆင်နိုင်သော",
@@ -1182,7 +1184,8 @@
       "openclaw": "သင့်ကိုယ်ပိုင်စက်မှနေ၍ WhatsApp၊ Telegram၊ Discord နှင့် အခြားနေရာများတွင် ဖြေကြားပေးသော အမြဲအသင့်ရှိနေသည့် ကိုယ်ပိုင်လက်ထောက်။",
       "hermes": "Nous Research ၏ မိမိကိုယ်ကို တိုးတက်အောင်လုပ်နိုင်သော အေးဂျင့်၊ တည်မြဲသည့်မှတ်ဉာဏ်နှင့် ကျွမ်းကျင်မှုများပါဝင်ပြီး terminal တွင်ဖြစ်စေ chat အက်ပ်များတွင်ဖြစ်စေ အသုံးပြုနိုင်သည်။",
       "pi": "သင့်ကိုယ်ပိုင် extension များ၊ ကျွမ်းကျင်မှုများနှင့် prompt template များဖြင့် ပုံဖော်နိုင်သော အနည်းဆုံး terminal အေးဂျင့်။",
-      "reasonix": "DeepSeek အတွက် တည်ဆောက်ထားသော terminal coding agent ဖြစ်ပြီး ရှည်လျားသော session များ စျေးသက်သာစေရန် prefix caching ကို အခြေခံထားသည်။"
+      "reasonix": "DeepSeek အတွက် တည်ဆောက်ထားသော terminal coding agent ဖြစ်ပြီး ရှည်လျားသော session များ စျေးသက်သာစေရန် prefix caching ကို အခြေခံထားသည်။",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

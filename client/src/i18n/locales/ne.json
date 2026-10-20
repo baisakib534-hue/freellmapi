@@ -542,6 +542,8 @@
     "providerActions": "प्रदायक कार्यहरू",
     "routeViaProxy": "प्रोक्सी हुँदै मार्ग",
     "checkNow": "अहिले जाँच गर्नुहोस्",
+    "lastWorkedHint": "Last worked: {when}",
+    "lastWorkedNever": "Has not served a request or passed a check yet",
     "noAutoCheckHint": "यो प्रदायकले स्वचालित कुञ्जी जाँचलाई अनुमति दिँदैन। पहिलो अनुरोध पूरा गरेपछि कुञ्जी स्वस्थ हुन्छ।",
     "noModelsYetHint": "तपाईंको क्याटलगमा अझै यो प्रदायकको कुनै मोडेल छैन, त्यसैले पूरा गर्ने केही छैन।",
     "proxyEnvHintBefore": "मार्फत पनि कन्फिगर गर्न सकिने",
@@ -1182,7 +1184,8 @@
       "openclaw": "तपाईंको आफ्नै मेसिनबाट WhatsApp, Telegram, Discord र अन्यमा जवाफ दिने, सधैं चालु रहने व्यक्तिगत सहायक।",
       "hermes": "Nous Research को आफैं सुधारिने एजेन्ट, स्थायी मेमोरी र सीपहरूसहित, टर्मिनलमा वा च्याट एपहरूमा।",
       "pi": "एक न्यूनतम टर्मिनल एजेन्ट, जसलाई तपाईं आफ्नै एक्सटेन्सन, सीप र प्रम्प्ट टेम्प्लेटले आकार दिनुहुन्छ।",
-      "reasonix": "DeepSeek का लागि बनाइएको टर्मिनल कोडिङ एजेन्ट, लामा सत्रहरू सस्तो रहून् भनेर प्रिफिक्स क्यासिङको वरिपरि निर्माण गरिएको।"
+      "reasonix": "DeepSeek का लागि बनाइएको टर्मिनल कोडिङ एजेन्ट, लामा सत्रहरू सस्तो रहून् भनेर प्रिफिक्स क्यासिङको वरिपरि निर्माण गरिएको।",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

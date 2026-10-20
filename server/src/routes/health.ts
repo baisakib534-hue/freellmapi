@@ -28,7 +28,7 @@ healthRouter.get('/', (_req: Request, res: Response) => {
   `).all() as any[];
 
   const keys = db.prepare(`
-    SELECT id, platform, label, status, enabled, created_at, last_checked_at, last_health_error
+    SELECT id, platform, label, status, enabled, created_at, last_checked_at, last_healthy_at, last_health_error
     FROM api_keys
     ORDER BY platform, created_at DESC
   `).all() as any[];
@@ -53,6 +53,7 @@ healthRouter.get('/', (_req: Request, res: Response) => {
       enabled: k.enabled === 1,
       createdAt: k.created_at,
       lastCheckedAt: k.last_checked_at,
+      lastHealthyAt: k.last_healthy_at ?? null,
       lastHealthError: k.last_health_error,
     })),
     quotaStates: getQuotaStateForKeys(),
@@ -74,9 +75,9 @@ healthRouter.post('/check/:keyId', async (req: Request, res: Response) => {
 
 // Check all keys. Forced: someone pressed the button and wants an answer about
 // every key now, so the scheduled pass' recency skip and provider spacing (#553)
-// don't apply.
+// don't apply, and providers that must not be polled (#1599) are checked too.
 healthRouter.post('/check-all', async (_req: Request, res: Response) => {
-  await checkAllKeys({ force: true });
+  await checkAllKeys({ force: true, manual: true });
   res.json({ success: true });
 });
 

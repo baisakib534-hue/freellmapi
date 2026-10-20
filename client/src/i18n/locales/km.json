@@ -542,6 +542,8 @@
     "providerActions": "សកម្មភាពអ្នកផ្តល់សេវា",
     "routeViaProxy": "បញ្ជូនតាមរយៈប្រូកស៊ី",
     "checkNow": "ពិនិត្យឥឡូវនេះ",
+    "lastWorkedHint": "Last worked: {when}",
+    "lastWorkedNever": "Has not served a request or passed a check yet",
     "noAutoCheckHint": "អ្នកផ្ដល់សេវានេះមិនអនុញ្ញាតការពិនិត្យសោដោយស្វ័យប្រវត្តិទេ។ សោនឹងល្អ បន្ទាប់ពីវាបម្រើសំណើដំបូងរបស់វា។",
     "noModelsYetHint": "កាតាឡុករបស់អ្នកមិនទាន់មានម៉ូដែលពីអ្នកផ្ដល់សេវានេះនៅឡើយ ដូច្នេះមិនមានអ្វីត្រូវបម្រើទេ។",
     "proxyEnvHintBefore": "អាចកំណត់រចនាសម្ព័ន្ធបានតាមរយៈ",
@@ -1182,7 +1184,8 @@
       "openclaw": "ជំនួយការផ្ទាល់ខ្លួនដែលដំណើរការជានិច្ច ហើយឆ្លើយតបនៅលើ WhatsApp, Telegram, Discord និងផ្សេងទៀត ពីម៉ាស៊ីនរបស់អ្នកផ្ទាល់។",
       "hermes": "ភ្នាក់ងាររបស់ Nous Research ដែលកែលម្អខ្លួនឯង មានអង្គចងចាំអចិន្ត្រៃយ៍ និងជំនាញ នៅក្នុង terminal ឬលើកម្មវិធីជជែក។",
       "pi": "ភ្នាក់ងារ terminal តូចចង្អៀត ដែលអ្នករៀបចំដោយផ្នែកបន្ថែម ជំនាញ និងគំរូ prompt ផ្ទាល់ខ្លួន។",
-      "reasonix": "ភ្នាក់ងារសរសេរកូដលើ terminal ដែលបង្កើតឡើងសម្រាប់ DeepSeek ផ្អែកលើ prefix caching ដើម្បីឱ្យវគ្គវែងៗនៅតែថោក។"
+      "reasonix": "ភ្នាក់ងារសរសេរកូដលើ terminal ដែលបង្កើតឡើងសម្រាប់ DeepSeek ផ្អែកលើ prefix caching ដើម្បីឱ្យវគ្គវែងៗនៅតែថោក។",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

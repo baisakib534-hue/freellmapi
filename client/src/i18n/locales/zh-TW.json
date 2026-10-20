@@ -546,6 +546,8 @@
     "providerActions": "提供者操作",
     "routeViaProxy": "經由代理伺服器轉發",
     "checkNow": "立即檢查",
+    "lastWorkedHint": "上次可用：{when}",
+    "lastWorkedNever": "尚未處理請求，也尚未通過檢查",
     "noAutoCheckHint": "此供應商不允許自動檢查金鑰。金鑰在處理完第一個請求後會變為正常。",
     "noModelsYetHint": "你的目錄中還沒有此供應商的模型，因此暫時沒有可處理的請求。",
     "proxyEnvHintBefore": "也可透過 ",
@@ -1182,7 +1184,8 @@
       "openclaw": "一個常駐運作的個人助理，從你自己的機器上透過 WhatsApp、Telegram、Discord 等回應。",
       "hermes": "Nous Research 的自我改進代理，具備持久記憶與技能，可在終端機或聊天應用程式中使用。",
       "pi": "一個極簡的終端機代理，用你自己的擴充功能、技能與提示詞範本來塑造它。",
-      "reasonix": "為 DeepSeek 原生打造的終端程式設計代理，圍繞前綴快取設計，長時間工作階段也能維持低成本。"
+      "reasonix": "為 DeepSeek 原生打造的終端程式設計代理，圍繞前綴快取設計，長時間工作階段也能維持低成本。",
+      "zcode": "Z.ai 為其 GLM 模型打造的編程智能體，可透過提供方註冊表連線任何 OpenAI 相容端點。"
     }
   },
   "update": {

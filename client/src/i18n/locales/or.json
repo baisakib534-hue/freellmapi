@@ -542,6 +542,8 @@
     "providerActions": "ପ୍ରଦାନକାରୀ କାର୍ଯ୍ୟ",
     "routeViaProxy": "ପ୍ରକ୍ସି ମାଧ୍ୟମରେ ମାର୍ଗ",
     "checkNow": "ବର୍ତ୍ତମାନ ଯାଞ୍ଚ କରନ୍ତୁ",
+    "lastWorkedHint": "Last worked: {when}",
+    "lastWorkedNever": "Has not served a request or passed a check yet",
     "noAutoCheckHint": "ଏହି ପ୍ରଦାନକାରୀ ସ୍ୱୟଂଚାଳିତ କି ଯାଞ୍ଚକୁ ଅନୁମତି ଦିଏ ନାହିଁ। ପ୍ରଥମ ଅନୁରୋଧ ପୂରଣ କରିବା ପରେ କି ସୁସ୍ଥ ହୁଏ।",
     "noModelsYetHint": "ଆପଣଙ୍କ କାଟାଲଗରେ ଏପର୍ଯ୍ୟନ୍ତ ଏହି ପ୍ରଦାନକାରୀଙ୍କ କୌଣସି ମଡେଲ ନାହିଁ, ତେଣୁ ପୂରଣ କରିବାକୁ କିଛି ନାହିଁ।",
     "proxyEnvHintBefore": "ମାଧ୍ୟମରେ ମଧ୍ୟ କନଫିଗର୍ କରାଯାଇପାରେ",
@@ -1182,7 +1184,8 @@
       "openclaw": "ଆପଣଙ୍କ ନିଜ ମେସିନରୁ WhatsApp, Telegram, Discord ଓ ଆହୁରି ଅନେକ ସ୍ଥାନରେ ଉତ୍ତର ଦେଉଥିବା, ସବୁବେଳେ ଚାଲୁ ରହୁଥିବା ବ୍ୟକ୍ତିଗତ ସହାୟକ।",
       "hermes": "Nous Research ର ନିଜକୁ ଉନ୍ନତ କରୁଥିବା ଏଜେଣ୍ଟ, ସ୍ଥାୟୀ ମେମୋରୀ ଓ ଦକ୍ଷତା ସହିତ, ଟର୍ମିନାଲରେ କିମ୍ବା ଚାଟ୍ ଆପ୍‌ରେ।",
       "pi": "ଏକ ସର୍ବନିମ୍ନ ଟର୍ମିନାଲ ଏଜେଣ୍ଟ, ଯାହାକୁ ଆପଣ ନିଜର ଏକ୍ସଟେନସନ, ଦକ୍ଷତା ଓ ପ୍ରମ୍ପ୍ଟ ଟେମ୍ପଲେଟରେ ଗଢ଼ନ୍ତି।",
-      "reasonix": "DeepSeek ପାଇଁ ତିଆରି ଟର୍ମିନାଲ କୋଡିଂ ଏଜେଣ୍ଟ, ଲମ୍ବା ସେସନ ଶସ୍ତା ରହିବା ପାଇଁ ପ୍ରିଫିକ୍ସ କ୍ୟାଶିଂ ଉପରେ ଗଢ଼ାଯାଇଛି।"
+      "reasonix": "DeepSeek ପାଇଁ ତିଆରି ଟର୍ମିନାଲ କୋଡିଂ ଏଜେଣ୍ଟ, ଲମ୍ବା ସେସନ ଶସ୍ତା ରହିବା ପାଇଁ ପ୍ରିଫିକ୍ସ କ୍ୟାଶିଂ ଉପରେ ଗଢ଼ାଯାଇଛି।",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {

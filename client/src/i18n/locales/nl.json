@@ -542,6 +542,8 @@
     "providerActions": "Acties van aanbieders",
     "routeViaProxy": "Route via proxy",
     "checkNow": "Controleer nu",
+    "lastWorkedHint": "Laatst gewerkt: {when}",
+    "lastWorkedNever": "Heeft nog geen verzoek dienden lopen noch een controle doorstaan",
     "noAutoCheckHint": "Deze provider staat geen automatische sleutelcontroles toe. De sleutel wordt gezond nadat hij zijn eerste verzoek heeft afgehandeld.",
     "noModelsYetHint": "Je catalogus heeft nog geen modellen van deze provider, dus er valt niets af te handelen.",
     "proxyEnvHintBefore": "Ook configureerbaar via de",
@@ -1182,7 +1184,8 @@
       "openclaw": "Een altijd actieve persoonlijke assistent die vanaf je eigen machine antwoordt op WhatsApp, Telegram, Discord en meer.",
       "hermes": "De zelfverbeterende agent van Nous Research met blijvend geheugen en skills, in de terminal of in chat-apps.",
       "pi": "Een minimalistische terminal-agent die je vormgeeft met je eigen extensies, skills en promptsjablonen.",
-      "reasonix": "Een terminal-codeeragent gebouwd voor DeepSeek, rond prefix-caching, zodat lange sessies goedkoop blijven."
+      "reasonix": "Een terminal-codeeragent gebouwd voor DeepSeek, rond prefix-caching, zodat lange sessies goedkoop blijven.",
+      "zcode": "De codeeragent van Z.ai voor zijn GLM-modellen, verbindt met elke OpenAI-compatibele endpoint via een providerregister."
     }
   },
   "update": {

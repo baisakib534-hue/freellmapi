@@ -542,6 +542,8 @@
     "providerActions": "פעולות ספק",
     "routeViaProxy": "מסלול באמצעות פרוקסי",
     "checkNow": "בדוק עכשיו",
+    "lastWorkedHint": "עבד לאחרונה: {when}",
+    "lastWorkedNever": "עדיין לא שירת בקש ולא עבר בדיקה",
     "noAutoCheckHint": "ספק זה אינו מאפשר בדיקות מפתח אוטומטיות. המפתח הופך לתקין אחרי שהוא משרת את הבקשה הראשונה שלו.",
     "noModelsYetHint": "בקטלוג שלך עדיין אין מודלים מהספק הזה, כך שאין לו מה לשרת.",
     "proxyEnvHintBefore": "ניתן גם להגדיר דרך",
@@ -1182,7 +1184,8 @@
       "openclaw": "עוזר אישי שפועל תמיד ועונה ב-WhatsApp, Telegram, Discord ועוד מהמחשב שלכם.",
       "hermes": "הסוכן המשתפר-מעצמו של Nous Research עם זיכרון מתמשך וכישורים, בטרמינל או באפליקציות צ'אט.",
       "pi": "סוכן טרמינל מינימלי שאתם מעצבים בעזרת הרחבות, כישורים ותבניות פרומפט משלכם.",
-      "reasonix": "סוכן קוד לטרמינל שנבנה במיוחד עבור DeepSeek, סביב מטמון קידומות כדי שסשנים ארוכים יישארו זולים."
+      "reasonix": "סוכן קוד לטרמינל שנבנה במיוחד עבור DeepSeek, סביב מטמון קידומות כדי שסשנים ארוכים יישארו זולים.",
+      "zcode": "Z.ai's coding agent for its GLM models, speaking any OpenAI-compatible endpoint through a provider registry."
     }
   },
   "update": {
