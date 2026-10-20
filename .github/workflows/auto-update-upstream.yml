@@ -1,0 +1,34 @@
+name: Auto-update from upstream
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/tashfeenahmed/freellmapi.git || true
+          git fetch upstream main
+      - name: Merge upstream
+        run: |
+          git merge upstream/main --no-edit || { echo "Merge conflict - aborting without pushing"; git merge --abort; exit 1; }
+      - name: Guard - persistence layer must survive
+        run: |
+          test -f litestream.yml || { echo "litestream.yml missing after merge - aborting to protect the database"; exit 1; }
+          grep -qi "litestream" Dockerfile || { echo "Litestream missing from Dockerfile after merge - aborting to protect the database"; exit 1; }
+      - name: Push
+        run: git push origin HEAD:main
