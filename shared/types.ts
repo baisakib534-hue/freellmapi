@@ -76,6 +76,9 @@ export type Platform =
   | 'beatapi'
   // Free-category chat and decisions share one weighted daily allowance.
   | 'apinex'
+  // OpenAI-compatible gateway; free models share a 30-calls/5-hour account
+  // allowance on top of a site-wide pool (issue #1460).
+  | 'onomeo'
   // Ongoing free research API for chat and speech recognition; catalog only.
   | 'typhoon'
   // Permanent free chat aliases, shared fair-use quota; signed catalog only.
@@ -214,11 +217,13 @@ export type Platform =
   // in the hosted catalog (premium now, free after the 30-day model-age gate).
   | 'xkiro'
   // ModelScope (魔搭社区, Alibaba) — OpenAI-compatible inference API
-  // (api-inference.modelscope.cn/v1). Free tier is 2000 requests/day
-  // account-wide, but calls only work after the ModelScope account is bound to
-  // an Alibaba Cloud CHINA-site (cn) account with Chinese real-name
-  // verification — tokens mint without binding, then every call 401s. Catalog
-  // rows land after community testing confirms per-model behavior (#581).
+  // (api-inference.modelscope.cn/v1). Free tier moved to magic-grain (魔粒)
+  // metering in 2026-08: ~250 魔粒/day account-wide at ~2 魔粒 per request
+  // (observed 2026-08-14) ≈ 125 requests/day, but calls only work after the
+  // ModelScope account is bound to an Alibaba Cloud CHINA-site (cn) account
+  // with Chinese real-name verification — tokens mint without binding, then
+  // every call 401s. Catalog rows land after community testing confirms
+  // per-model behavior (#581).
   | 'modelscope'
   // ── Chinese domestic providers (#922/#923/#924) ────────────────────────────
   // All four need Chinese real-name verification (实名认证) on the cloud account

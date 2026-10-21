@@ -38,7 +38,7 @@ import type { Platform } from '@freellmapi/shared/types.js';
 import { inferQuotaPoolKey, type QuotaObservationContext } from '../services/provider-quota.js';
 import { isUnifyEnabled, getModelGroups, resolveRequestedIdForDispatch } from '../services/model-groups.js';
 import { buildModelListing, type NormalizedModel } from '../services/model-listing.js';
-import { claudeFamilyDiscoveryEntries } from '../services/anthropic-map.js';
+import { claudeFamilyDiscoveryEntries, resolveListedClaudeAlias } from '../services/anthropic-map.js';
 import { compressRequest, formatCompressionHeader } from '../services/compression/pipeline.js';
 import { applyDecisionRouting, routingStrategyHeader } from '../services/routing-decision.js';
 
@@ -326,17 +326,66 @@ proxyRouter.get('/models', (req: Request, res: Response) => {
   // "which models can this instance actually serve now". `available` is computed as
   // "enabled AND an enabled key can serve it"; dedup prefers an available
   // instance of a model id over a disabled/keyless one.
-  // Shared catalog listing (one source of truth for the OpenAI and Anthropic
-  // /v1/models endpoints — see services/model-listing.ts). `autoContextWindow`
-  // is the honest ceiling for the virtual "auto" model: the largest context
-  // window among models that can serve a request right now. Advertising null
-  // makes OpenAI-compatible clients (opencode, Continue) fall back to their own
-  // conservative default and truncate long inputs before they reach us (#282).
-  const { models: allListed, autoContextWindow } = buildModelListing();
-
   const q = String(req.query.available ?? req.query.connected ?? req.query.ready ?? '').toLowerCase();
   const onlyAvailable = q === '1' || q === 'true' || q === 'yes';
-  const listed = onlyAvailable ? allListed.filter(m => m.available === 1) : allListed;
+  const esValues: Record<string, NormalizedModel['executionStatus']> = {
+    ready: 'ready', needskey: 'needsKey', exhausted: 'exhausted',
+  };
+  const es = esValues[String(req.query.execution_status ?? '').toLowerCase()];
+
+  res.json({
+    object: 'list',
+    data: buildCatalogEntries({ onlyAvailable, executionStatus: es }),
+  });
+});
+
+// GET /v1/models/:id — OpenAI's `models.retrieve` (single-model lookup).
+// Without it, `client.models.retrieve(id)` and every gateway that validates a
+// model id before routing (LiteLLM proxy config checks, OpenAI Agents SDK
+// model caps, eval harnesses) answers 404 even though chat completions for
+// the same id work fine. Served from the SAME builder as the list, so what a
+// client lists is byte-for-byte what it retrieves; unknown ids get OpenAI's
+// error shape (type: invalid_request_error). The id may itself contain
+// slashes (openrouter-style ids): the wildcard capture rejoins them, and a
+// URL-encoded %2F arrives decoded through Express's plain :id capture.
+const MODEL_RETRIEVE_MAX_ID_LEN = 300;
+proxyRouter.get(['/models/:id', '/models/*rest'], (req: Request, res: Response) => {
+  if (!requireInferenceAuth(req, res)) return;
+  // Express 5 hands a wildcard capture as a string array; a plain :id capture
+  // as a string. Rejoin the segments so "vendor/ns/model" round-trips.
+  const capture = (req.params as Record<string, unknown>).id
+    ?? (req.params as Record<string, unknown>).rest;
+  const id = Array.isArray(capture) ? capture.join('/') : String(capture ?? '');
+  if (!id || id.length > MODEL_RETRIEVE_MAX_ID_LEN) {
+    res.status(404).json({
+      error: { message: `Model not found: ${id.slice(0, 80)}`, type: 'invalid_request_error', code: 'model_not_found', param: 'id' },
+    });
+    return;
+  }
+  const entry = buildCatalogEntries().find(m => m.id === id);
+  if (!entry) {
+    res.status(404).json({
+      error: { message: `Model not found: ${id}`, type: 'invalid_request_error', code: 'model_not_found', param: 'id' },
+    });
+    return;
+  }
+  res.json({ ...entry, object: 'model' });
+});
+
+// The whole OpenAI-shaped /v1/models body, as one array of entries: the two
+// router entries (`auto`, `fusion`), the Claude-family discovery aliases (#880),
+// one entry per named fallback chain (`auto:<name>`), then the catalog rows.
+// Shared by GET /v1/models and GET /v1/models/:id so a model a client can LIST
+// is a model it can RETRIEVE with the identical shape — the retrieve endpoint
+// is OpenAI's `models.retrieve`, which LiteLLM-style gateways and eval
+// harnesses (lm-evaluation-harness, OpenAI SDK `.models.retrieve()`) call
+// before routing; a 404 there breaks those clients even when chat works.
+// The `?available=` / `?execution_status=` filters narrow only the catalog
+// rows — `auto`, `fusion` and the named chains are router entries, not models
+// with keys of their own.
+function buildCatalogEntries(filters: { onlyAvailable?: boolean; executionStatus?: NormalizedModel['executionStatus'] } = {}): Array<Record<string, unknown>> {
+  const { models: allListed, autoContextWindow } = buildModelListing();
+  const listed = filters.onlyAvailable ? allListed.filter(m => m.available === 1) : allListed;
 
   // Named fallback chains (#960/#895): every user-defined profile is exposed
   // as an `auto:<name>` model so a client can pick a specific fallback chain
@@ -398,78 +447,78 @@ proxyRouter.get('/models', (req: Request, res: Response) => {
   // the value itself is camelCase; an unrecognised value filters nothing, the
   // same way an unrecognised `?available=` does. Like `?available=`, this
   // narrows only the catalog rows: `auto`, `fusion` and the named chains are
-  // router entries, not models with keys of their own.
-  const esValues: Record<string, NormalizedModel['executionStatus']> = {
-    ready: 'ready', needskey: 'needsKey', exhausted: 'exhausted',
-  };
-  const es = esValues[String(req.query.execution_status ?? '').toLowerCase()];
-  const esFiltered = es ? listed.filter(m => m.executionStatus === es) : listed;
+  // Machine-readable execution filter: `?execution_status=ready` narrows to
+  // models a request can actually serve RIGHT NOW (a key that is not scoped
+  // away, cooling down or out of window). `ready` implies available;
+  // `needsKey`/`exhausted` select the rest. Matched case-insensitively because
+  // the value itself is camelCase; an unrecognised value filters nothing, the
+  // same way an unrecognised `?available=` does.
+  const esFiltered = filters.executionStatus
+    ? listed.filter(m => m.executionStatus === filters.executionStatus)
+    : listed;
 
-  res.json({
-    object: 'list',
-    data: [
-      {
-        id: AUTO_MODEL_ID,
-        object: 'model',
-        created: 0,
-        owned_by: 'freellmapi',
-        name: 'Auto (router picks the best available model)',
-        context_window: autoContextWindow,
-        // `context_length` is OpenRouter's field name and the one most
-        // OpenAI-compatible clients read; emit both so whichever a client
-        // looks for is populated. Additive — clients ignore unknown fields.
-        context_length: autoContextWindow,
-        available: true,
-        unavailable_reason: null,
-      },
-      {
-        id: FUSION_MODEL_ID,
-        object: 'model',
-        created: 0,
-        owned_by: 'freellmapi',
-        name: 'Fusion (panel of models answer in parallel, a judge synthesizes one answer)',
-        context_window: autoContextWindow,
-        context_length: autoContextWindow,
-        // Available whenever auto is — fusion needs at least one routable model.
-        available: autoContextWindow != null,
-        unavailable_reason: autoContextWindow != null ? null : 'no_models',
-      },
-      ...claudeFamilyEntries,
-      ...profileRows.map(p => ({
-        id: `auto:${p.name.toLowerCase()}`,
-        object: 'model',
-        created: 0,
-        owned_by: 'freellmapi',
-        name: `Auto: ${p.name} (named fallback chain)`,
-        context_window: p.max_ctx,
-        context_length: p.max_ctx,
-        available: p.usable === 1,
-        unavailable_reason: p.usable === 1 ? null : 'no_models',
-      })),
-      ...esFiltered.map(m => ({
-        id: m.id,
-        object: 'model',
-        created: 0,
-        owned_by: m.ownedBy,
-        name: m.name,
-        context_window: m.contextWindow,
-        context_length: m.contextWindow,
-        // Non-standard but additive: OpenAI clients ignore unknown fields.
-        available: m.available === 1,
-        unavailable_reason: m.available === 1 ? null : (m.enabled === 1 ? 'no_key' : 'disabled'),
-        // Machine-readable dynamic status: 'ready' | 'needsKey' | 'exhausted'
-        // (see services/model-listing.ts). Agents can filter with
-        // ?execution_status=ready and route around exhausted models.
-        execution_status: m.executionStatus,
-        // OpenRouter's field name; agents use it to pick knobs per model. For
-        // a unify group this is the intersection over member platforms — a
-        // param is only advertised when every platform the router might pick
-        // honors it.
-        supported_parameters: supportedParametersForPlatforms(m.platforms, { tools: m.supportsTools }),
-      })),
-    ],
-  });
-});
+  return [
+    {
+      id: AUTO_MODEL_ID,
+      object: 'model',
+      created: 0,
+      owned_by: 'freellmapi',
+      name: 'Auto (router picks the best available model)',
+      context_window: autoContextWindow,
+      // `context_length` is OpenRouter's field name and the one most
+      // OpenAI-compatible clients read; emit both so whichever a client
+      // looks for is populated. Additive — clients ignore unknown fields.
+      context_length: autoContextWindow,
+      available: true,
+      unavailable_reason: null,
+    },
+    {
+      id: FUSION_MODEL_ID,
+      object: 'model',
+      created: 0,
+      owned_by: 'freellmapi',
+      name: 'Fusion (panel of models answer in parallel, a judge synthesizes one answer)',
+      context_window: autoContextWindow,
+      context_length: autoContextWindow,
+      // Available whenever auto is — fusion needs at least one routable model.
+      available: autoContextWindow != null,
+      unavailable_reason: autoContextWindow != null ? null : 'no_models',
+    },
+    ...claudeFamilyEntries,
+    ...profileRows.map(p => ({
+      id: `auto:${p.name.toLowerCase()}`,
+      object: 'model',
+      created: 0,
+      owned_by: 'freellmapi',
+      name: `Auto: ${p.name} (named fallback chain)`,
+      context_window: p.max_ctx,
+      context_length: p.max_ctx,
+      available: p.usable === 1,
+      unavailable_reason: p.usable === 1 ? null : 'no_models',
+    })),
+    ...esFiltered.map(m => ({
+      id: m.id,
+      object: 'model',
+      created: 0,
+      owned_by: m.ownedBy,
+      name: m.name,
+      context_window: m.contextWindow,
+      context_length: m.contextWindow,
+      // Non-standard but additive: OpenAI clients ignore unknown fields.
+      available: m.available === 1,
+      unavailable_reason: m.available === 1 ? null : (m.enabled === 1 ? 'no_key' : 'disabled'),
+      // Machine-readable dynamic status: 'ready' | 'needsKey' | 'exhausted'
+      // (see services/model-listing.ts). Agents can filter with
+      // ?execution_status=ready and route around exhausted models.
+      execution_status: m.executionStatus,
+      // OpenRouter's field name; agents use it to pick knobs per model. For
+      // a unify group this is the intersection over member platforms — a
+      // param is only advertised when every platform the router might pick
+      // honors it.
+      supported_parameters: supportedParametersForPlatforms(m.platforms, { tools: m.supportsTools }),
+    })),
+  ];
+}
 
 
 // GET /v1/usage — self-service consumption for inference clients (#1568).
@@ -515,6 +564,30 @@ proxyRouter.get('/usage', (req: Request, res: Response) => {
     ORDER BY tokens DESC, requests DESC
   `).all(month) as { platform: string; requests: number; tokens: number }[];
 
+  // Per-provider-key rows (#1568 follow-up): "groq ate 90M" still doesn't say
+  // WHICH account did it, or whether that account is about to hit the monthly
+  // cap the caller keeps being 429'd on. LiteLLM's /key/info reports limits and
+  // spend together for the same reason. Caps echo api_keys (0 = unlimited), so
+  // the answer matches checkMonthlyBudget's verdict exactly. Deleted keys keep
+  // their ledger rows orphaned; they surface under the platform 'removed' with
+  // no caps, same as the platform roll-up above.
+  const byKey = db.prepare(`
+    SELECT u.key_id AS keyId,
+           COALESCE(k.platform, 'removed') AS platform,
+           COALESCE(k.label, '') AS label,
+           COALESCE(k.enabled, 0) AS enabled,
+           u.requests AS requests, u.tokens AS tokens,
+           COALESCE(k.monthly_request_cap, 0) AS requestCap,
+           COALESCE(k.monthly_token_cap, 0) AS tokenCap
+    FROM key_monthly_usage u
+    LEFT JOIN api_keys k ON k.id = u.key_id
+    WHERE u.month = ? AND (u.requests > 0 OR u.tokens > 0)
+    ORDER BY u.tokens DESC, u.requests DESC
+  `).all(month) as {
+    keyId: number; platform: string; label: string; enabled: number;
+    requests: number; tokens: number; requestCap: number; tokenCap: number;
+  }[];
+
   res.json({
     object: 'usage',
     month,
@@ -522,6 +595,18 @@ proxyRouter.get('/usage', (req: Request, res: Response) => {
     requests: totals.requests,
     tokens: totals.tokens,
     byPlatform,
+    byKey: byKey.map(k => ({
+      keyId: k.keyId,
+      platform: k.platform,
+      label: k.label,
+      enabled: k.enabled === 1,
+      requests: k.requests,
+      tokens: k.tokens,
+      // null = unlimited, matching how the dashboard renders "no cap" and
+      // sparing a script from treating 0 as "cap of zero requests".
+      requestCap: k.requestCap > 0 ? k.requestCap : null,
+      tokenCap: k.tokenCap > 0 ? k.tokenCap : null,
+    })),
   });
 });
 
@@ -1304,8 +1389,12 @@ proxyRouter.post('/completions', async (req: Request, res: Response) => {
     return;
   }
 
-  const { model: requestedModel, prompt, suffix, temperature, top_p, stream } = parsed.data;
-  const requestedModelLabel = requestedModel ?? 'auto';
+  const { model: clientModel, prompt, suffix, temperature, top_p, stream } = parsed.data;
+  const requestedModelLabel = clientModel ?? 'auto';
+  // Claude alias from GET /v1/models → the Claude family map, as on /v1/chat/completions.
+  const claudeAlias = resolveListedClaudeAlias(clientModel);
+  const requestedModel = claudeAlias?.kind === 'model' ? claudeAlias.modelId : claudeAlias ? 'auto' : clientModel;
+  const aliasTierChain = claudeAlias?.kind === 'tier' ? resolveModelGroupCandidates(claudeAlias.dbIds) : [];
   const max_tokens = parsed.data.max_tokens != null && parsed.data.max_tokens > 0
     ? parsed.data.max_tokens : 128;
   const stop = providerSafeStop(parsed.data.stop);
@@ -1337,9 +1426,9 @@ proxyRouter.post('/completions', async (req: Request, res: Response) => {
   }
 
   let preferredModel: number | undefined;
-  let groupChain: ChainRow[] | undefined;
+  let groupChain: ChainRow[] | undefined = aliasTierChain.length > 0 ? aliasTierChain : undefined;
 
-  if (!isAutoModel(requestedModel) && requestedModel) {
+  if (!groupChain && !isAutoModel(requestedModel) && requestedModel) {
     const db = getDb();
     const resolved = isUnifyEnabled() ? resolveRequestedIdForDispatch(requestedModel, getModelGroups()) : null;
     const members = resolved?.memberDbIds ?? null;
@@ -1727,8 +1816,13 @@ proxyRouter.post('/chat/completions', async (req: Request, res: Response) => {
     return;
   }
 
-  const { model: requestedModel, temperature, top_p, stream } = parsed.data;
-  const requestedModelLabel = requestedModel ?? 'auto';
+  const { model: clientModel, temperature, top_p, stream } = parsed.data;
+  const requestedModelLabel = clientModel ?? 'auto';
+  // A Claude alias from GET /v1/models routes through the Claude family map
+  // (a pinned model, auto, or a tier pool), the same as on /v1/messages.
+  const claudeAlias = resolveListedClaudeAlias(clientModel);
+  const requestedModel = claudeAlias?.kind === 'model' ? claudeAlias.modelId : claudeAlias ? 'auto' : clientModel;
+  const aliasTierChain = claudeAlias?.kind === 'tier' ? resolveModelGroupCandidates(claudeAlias.dbIds) : [];
   // Agent-tolerant knob normalization (#200): max_tokens <= 0 means "no
   // limit" in several clients → unset; tool_choice 'any' is OpenAI's
   // 'required'; tool definitions get their 'function' type re-defaulted.
@@ -2256,7 +2350,14 @@ proxyRouter.post('/chat/completions', async (req: Request, res: Response) => {
   // successful provider without leaking stickiness across groups.
   let stickyStrategyKey: string | undefined = strategyKey;
 
-  if (isAutoModel(requestedModel)) {
+  if (aliasTierChain.length > 0) {
+    // A tier-mapped Claude alias routes STRICTLY over its tier's pool. An
+    // empty tier falls through to plain auto, as on /v1/messages.
+    groupChain = aliasTierChain;
+    stickyStrategyKey = `tier:${aliasTierChain[0]!.model_db_id}`;
+    const sticky = getStickyModel(messages, sessionIdHeader, stickyStrategyKey);
+    preferredModel = (sticky != null && groupChain.some(r => r.model_db_id === sticky)) ? sticky : undefined;
+  } else if (isAutoModel(requestedModel)) {
     preferredModel = resolveStickyPreference(getStickyModel(messages, sessionIdHeader, strategyKey), resolvedChain?.chain);
   } else if (requestedModel) {
     const db = getDb();

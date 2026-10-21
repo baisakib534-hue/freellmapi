@@ -624,6 +624,40 @@ export const openapiSpec = {
         },
       },
     },
+    '/v1/models/{id}': {
+      get: {
+        tags: ['Models'],
+        operationId: 'retrieveModel',
+        summary: 'Retrieve a single model (OpenAI models.retrieve)',
+        description:
+          'Returns one catalog entry by id in the OpenAI model shape, so ' +
+          'OpenAI-SDK clients (``client.models.retrieve(id)``) can resolve a ' +
+          'model before routing. Includes the virtual `auto` and `fusion` ids ' +
+          'and any catalog id with a slash (URL-encode the slash). Served from ' +
+          'the same builder as the list, so the two never disagree.',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'Model id (e.g. `auto`, or `vendor/model` — slash URL-encoded).',
+            schema: { type: 'string' },
+          },
+        ],
+        responses: {
+          '200': {
+            description: 'The model.',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Model' },
+              },
+            },
+          },
+          '401': { $ref: '#/components/responses/Unauthorized' },
+          '404': { description: 'No model with this id (OpenAI error shape: `model_not_found`).' },
+        },
+      },
+    },
     '/v1/usage': {
       get: {
         tags: ['Models'],
@@ -636,7 +670,7 @@ export const openapiSpec = {
           'the per-key monthly caps enforce, so these numbers always agree with a 429 quota_exceeded ' +
           'response. Mirrors OpenRouter GET /api/v1/auth/key and LiteLLM /key/info.',
         responses: {
-          '200': { description: 'Usage roll-up: month, resetsAt, requests, tokens, byPlatform[].' },
+          '200': { description: 'Usage roll-up: month, resetsAt, requests, tokens, byPlatform[], byKey[] (per provider key: label, enabled, requests, tokens, requestCap, tokenCap; null cap = unlimited).' },
           '401': { $ref: '#/components/responses/Unauthorized' },
           '403': { description: 'Called with a client-profile key; usage is install-wide, so only the unified key may read it.' },
         },

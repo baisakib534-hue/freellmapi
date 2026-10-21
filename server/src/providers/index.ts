@@ -39,6 +39,7 @@ import { WaterfallProvider } from './waterfall.js';
 import { LogfareProvider } from './logfare.js';
 import { BeatApiProvider } from './beatapi.js';
 import { ApinexProvider } from './apinex.js';
+import { OnomeoProvider } from './onomeo.js';
 import { SerpSearchProvider } from './serpsearch.js';
 
 const providers = new Map<Platform, BaseProvider>();
@@ -85,6 +86,7 @@ register(new BlockRunProvider());
 register(new MoondreamProvider());
 register(new BeatApiProvider());
 register(new ApinexProvider());
+register(new OnomeoProvider());
 register(new SerpSearchProvider());
 
 // Free-plan grants are shared wallets, not free credits per model. Eligibility
@@ -540,8 +542,10 @@ register(new OpenAICompatProvider({
 }));
 
 // ModelScope (魔搭社区, Alibaba) — OpenAI-compatible inference API
-// (api-inference.modelscope.cn/v1, Bearer auth). Free tier: 2000 requests/day
-// account-wide. Token from modelscope.cn/my/myaccesstoken, BUT calls only work
+// (api-inference.modelscope.cn/v1, Bearer auth). Free tier moved to magic-grain
+// (魔粒) metering in 2026-08: ~250 魔粒/day account-wide at ~2 魔粒 per request
+// (observed 2026-08-14) ≈ 125 requests/day. Token from
+// modelscope.cn/my/myaccesstoken, BUT calls only work
 // after binding the ModelScope account to an Alibaba Cloud CHINA-site (cn)
 // account with Chinese real-name verification — unbound tokens 401 on every
 // call ("please bind your alibaba cloud account before use"). Dedicated
