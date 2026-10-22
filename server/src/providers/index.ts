@@ -644,6 +644,7 @@ export function resolveProvider(platform: Platform, baseUrl?: string | null): Ba
       name: 'Custom (OpenAI-compatible)',
       baseUrl: trimmed,
       timeoutMs: CUSTOM_PROVIDER_TIMEOUT_MS,
+      extraHeaders: { 'User-Agent': 'Mozilla/5.0 FreeLLMAPI/1.0' },
     });
   }
   return providers.get(platform);
