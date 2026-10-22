@@ -66,6 +66,7 @@ COPY --from=build --chown=node:node /app/server/package.json ./server/package.js
 COPY --from=build --chown=node:node /app/desktop/package.json ./desktop/package.json
 COPY --from=build --chown=node:node /app/server/dist ./server/dist
 COPY --from=build --chown=node:node /app/client/dist ./client/dist
+COPY --from=build --chown=node:node /app/render-front.cjs ./render-front.cjs
 
 RUN mkdir -p /app/server/data && chown -R node:node /app/server/data
 
