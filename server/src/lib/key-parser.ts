@@ -49,6 +49,7 @@ export const PREFIX_MAP: Record<string, string> = {
   BEATAPI_: 'beatapi',
   APINEX_: 'apinex',
   ONOMEO_: 'onomeo',
+  ITERACOMPUTE_: 'iteracompute',
   BEAT_API_: 'beatapi',
   SERPSEARCH_: 'serpsearch',
   SERP_SEARCH_: 'serpsearch',
@@ -106,6 +107,7 @@ export const PREFIX_MAP: Record<string, string> = {
   FIRECRAWL_: 'firecrawl',
   LINKUP_: 'linkup',
   PARALLEL_: 'parallel',
+  KEENABLE_: 'keenable',
   CLOUDFLARE_: 'cloudflare',
   ZHIPU_: 'zhipu',
   OLLAMA_: 'ollama',
@@ -165,6 +167,7 @@ export const AUTH_JSON_PROVIDER_MAP: Record<string, string> = {
   beatapi: 'beatapi',
   apinex: 'apinex',
   onomeo: 'onomeo',
+  iteracompute: 'iteracompute',
   serpsearch: 'serpsearch',
   typhoon: 'typhoon',
   plugsky: 'plugsky',
@@ -251,6 +254,7 @@ export const AUTH_JSON_PROVIDER_MAP: Record<string, string> = {
   firecrawl: 'firecrawl',
   linkup: 'linkup',
   parallel: 'parallel',
+  keenable: 'keenable',
 };
 
 export function detectPlatform(prefix: string): string | null {
@@ -266,6 +270,9 @@ export function parseDotEnv(content: string): Array<{ key: string; value: string
   for (let line of text.split('\n')) {
     line = line.trim();
     if (!line || line.startsWith('#')) continue;
+    // A shell-sourced .env writes `export NAME=value`; the name is NAME, not
+    // `export NAME`, or the provider prefix is never recognised.
+    line = line.replace(/^export\s+/, '');
 
     const eqIndex = line.indexOf('=');
     if (eqIndex === -1) continue;

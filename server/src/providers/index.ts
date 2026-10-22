@@ -8,6 +8,7 @@ import { ExaProvider } from './exa.js';
 import { FirecrawlProvider } from './firecrawl.js';
 import { LinkupProvider } from './linkup.js';
 import { ParallelProvider } from './parallel.js';
+import { KeenableProvider } from './keenable.js';
 import { CloudflareProvider } from './cloudflare.js';
 import { AIHordeProvider } from './aihorde.js';
 import { ModelScopeProvider } from './modelscope.js';
@@ -40,6 +41,7 @@ import { LogfareProvider } from './logfare.js';
 import { BeatApiProvider } from './beatapi.js';
 import { ApinexProvider } from './apinex.js';
 import { OnomeoProvider } from './onomeo.js';
+import { IteraComputeProvider } from './iteracompute.js';
 import { SerpSearchProvider } from './serpsearch.js';
 
 const providers = new Map<Platform, BaseProvider>();
@@ -87,6 +89,9 @@ register(new MoondreamProvider());
 register(new BeatApiProvider());
 register(new ApinexProvider());
 register(new OnomeoProvider());
+// IteraCompute (#1649): free OpenAI-compatible gateway, one account-wide
+// monthly token allowance; no free credential probe (see adapter docs).
+register(new IteraComputeProvider());
 register(new SerpSearchProvider());
 
 // Free-plan grants are shared wallets, not free credits per model. Eligibility
@@ -218,6 +223,8 @@ register(new FirecrawlProvider());
 register(new LinkupProvider());
 // Keyless: anonymous Search MCP by default, REST API with a real key.
 register(new ParallelProvider());
+// Keyless: public endpoint by default, the keyed endpoint with a real key.
+register(new KeenableProvider());
 
 // Cloudflare Workers AI - OpenAI-compatible endpoint (key = "account_id:token")
 register(new CloudflareProvider());

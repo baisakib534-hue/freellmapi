@@ -65,10 +65,11 @@ const PLATFORMS = [
   'beatapi',
   'apinex',
   'onomeo',
+  'iteracompute',
   'serpsearch',
   'freeai',
   'google', 'groq', 'cerebras', 'sail', 'electronhub', 'experiential', 'router9', 'septor', 'clod', 'speechify', 'blaze', 'lucidity', 'airforce', 'dreamprompting', 'waterfall', 'logfare', 'bai', 'radeon', 'nvidia', 'mistral',
-  'openrouter', 'cohere', 'tavily', 'exa', 'firecrawl', 'linkup', 'parallel', 'cloudflare', 'zhipu', 'ollama',
+  'openrouter', 'cohere', 'tavily', 'exa', 'firecrawl', 'linkup', 'parallel', 'keenable', 'cloudflare', 'zhipu', 'ollama',
   'kilo', 'pollinations', 'llm7', 'huggingface', 'opencode', 'ovh', 'agnes', 'reka', 'siliconflow',
   'routeway', 'bazaarlink', 'ainative', 'aion', 'anyapi', 'requesty', 'navy', 'nara', 'sealion', 'orcarouter', 'unorouter', 'xkiro', 'modelscope',
   'qianfan', 'volcengine', 'longcat', 'xfyun', 'aihorde', 'custom',
@@ -469,7 +470,8 @@ keysRouter.get('/', (_req: Request, res: Response) => {
       // unexplained "unchecked". modelsAvailable says whether this install has
       // any of the provider's models to serve that first request with.
       autoHealthCheck: resolveProvider(row.platform)?.supportsKeyValidation !== false,
-      ...(resolveProvider(row.platform)?.supportsKeyValidation === false
+      // Search keys serve engines, not models, so they never count as missing models.
+      ...(resolveProvider(row.platform)?.supportsKeyValidation === false && !isSearchPlatform(row.platform)
         ? { modelsAvailable: modelCountFor(row.platform) }
         : {}),
       // Lets the export dialog count exactly what the export will write.
